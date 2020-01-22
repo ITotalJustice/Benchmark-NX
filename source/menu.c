@@ -9,7 +9,7 @@
 #include "nx/gc.h"
 
 
-#define TITLE_HEADER    "Benchmark NX\n"
+#define TITLE_HEADER    "Benchmark NX"
 #define SPACERS         "-------------------------------------------------------------------------------"
 #define OPTION_LIST_MAX 11
 
@@ -32,8 +32,22 @@ const char *g_option_list[] =
     "*Exit",
 };
 
+const char *g_chunk_size_text[] =
+{
+    "2MiB",
+    "4MiB",
+    "8MiB",
+};
+
+const size_t g_chunk_size[] =
+{
+    0x200000,
+    0x400000,
+    0x800000,
+};
 
 uint8_t g_cursor = 0;
+uint8_t g_x_cursor = 0;
 uint8_t g_list_cursor = 0;
 bool g_gamecard_mounted = false;
 
@@ -81,7 +95,7 @@ void print_option_list(void)
 
 void print_menu(void)
 {
-    printf("%s\n", TITLE_HEADER);
+    printf("%s:\tChunk Size: %s\n\n", TITLE_HEADER, g_chunk_size_text[g_x_cursor]);
     printf("%s\n\n", SPACERS);
     print_option_list();
     printf("%s\n\n", SPACERS);
@@ -129,7 +143,7 @@ int handle_input(void)
     {
         if (g_cursor == 5) return -1;
         if (g_cursor == 2 && !g_gamecard_mounted) return 0;
-        if (!benchmark(g_cursor, 0x800000, 0x80000000))
+        if (!benchmark(g_cursor, g_chunk_size[g_x_cursor], 0x80000000))
         {
             print_lock("An error occured\n\n");
         }
@@ -138,6 +152,11 @@ int handle_input(void)
     if (input.down & KEY_B)
     {
         return -1;
+    }
+
+    if (input.down & KEY_X)
+    {
+        g_x_cursor = move_cursor_down(g_x_cursor, 3);
     }
 
     return 0;
