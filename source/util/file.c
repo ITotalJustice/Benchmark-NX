@@ -116,7 +116,6 @@ bool find_file_of_size_at_least(const char *path, char *out, size_t size)
     if (!dir)
         return false;
 
-    printf("opened dir\n");
     char full_path_buf[0x400] = {0};
     bool found = false;
 

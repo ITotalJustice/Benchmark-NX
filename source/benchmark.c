@@ -147,6 +147,7 @@ bool benchmark(BenchmarkMode mode, size_t chunk_size, size_t full_size)
 
     uint16_t bar_length = 40;
     double prev_fraction_downloaded = 0;
+    struct timespec sleep_time = { 0, 1 };
 
     while (t.data_processed < t.total_size)
     {
@@ -154,6 +155,8 @@ bool benchmark(BenchmarkMode mode, size_t chunk_size, size_t full_size)
 
         if (prev_fraction_downloaded != fraction_downloaded)
         {
+            prev_fraction_downloaded = fraction_downloaded;
+
             uint16_t hashes = round(fraction_downloaded * bar_length);
 
             uint16_t i = 0;
@@ -172,6 +175,7 @@ bool benchmark(BenchmarkMode mode, size_t chunk_size, size_t full_size)
             printf("]\r");
             consoleUpdate(NULL);
         }
+        thrd_sleep(&sleep_time, 0);
     }
     printf("\n\n\n");
 
