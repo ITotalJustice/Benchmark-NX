@@ -145,28 +145,33 @@ bool benchmark(BenchmarkMode mode, size_t chunk_size, size_t full_size)
     // save the starting time.
     time_t start_time = time(NULL);
 
+    uint16_t bar_length = 40;
+    double prev_fraction_downloaded = 0;
+
     while (t.data_processed < t.total_size)
     {
-        uint16_t bar_length = 40;
         double fraction_downloaded = (double)t.data_processed / (double)t.total_size;
 
-        uint16_t hashes = round(fraction_downloaded * bar_length);
-
-        uint16_t i = 0;
-        printf("%3.0f%% [",fraction_downloaded * 100);
-
-        for (; i < hashes; i++)
+        if (prev_fraction_downloaded != fraction_downloaded)
         {
-            printf("#");
-        }
+            uint16_t hashes = round(fraction_downloaded * bar_length);
 
-        for (; i < bar_length; i++)
-        {
-            printf(" ");
+            uint16_t i = 0;
+            printf("%3.0f%% [",fraction_downloaded * 100);
+
+            for (; i < hashes; i++)
+            {
+                printf("#");
+            }
+
+            for (; i < bar_length; i++)
+            {
+                printf(" ");
+            }
+            
+            printf("]\r");
+            consoleUpdate(NULL);
         }
-        
-        printf("]\r");
-        consoleUpdate(NULL);
     }
     printf("\n\n\n");
 
